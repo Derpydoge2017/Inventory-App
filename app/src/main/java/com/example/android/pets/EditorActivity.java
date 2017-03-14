@@ -15,6 +15,7 @@
  */
 package com.example.android.pets;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -22,23 +23,33 @@ import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.pets.data.ItemContract.itemEntry;
+
+import static com.example.android.pets.data.ItemProvider.LOG_TAG;
 
 /**
  * Allows user to create a new item or edit an existing one.
@@ -61,6 +72,12 @@ public class EditorActivity extends AppCompatActivity implements
     /** EditText field to enter the item's weight */
     private EditText mWeightEditText;
 
+    /** EditText field to enter the item's cost */
+    private EditText mCostEditText;
+
+    /** EditText field to enter the item's quantity */
+    private EditText mQuantityEditText;
+
     /** EditText field to enter the item's status */
     private Spinner mStatusSpinner;
 
@@ -73,6 +90,26 @@ public class EditorActivity extends AppCompatActivity implements
 
     /** Boolean flag that keeps track of whether the item has been edited (true) or not (false) */
     private boolean mItemHasChanged = false;
+
+//    private static final int PICK_IMAGE_REQUEST = 0;
+//    private static final int REQUEST_IMAGE_CAPTURE = 1;
+//    private static final int MY_PERMISSIONS_REQUEST = 2;
+//
+//    private static final String FILE_PROVIDER_AUTHORITY = "com.example.android.pets";
+//
+//    private ImageView mImageView;
+//
+//    private Uri mUri;
+//    private Bitmap mBitmap;
+//
+//    private Button mButtonTakePicture;
+//
+//    private boolean isGalleryPicture = false;
+//
+//    private static final String JPEG_FILE_PREFIX = "IMG_";
+//    private static final String JPEG_FILE_SUFFIX = ".jpg";
+//
+//    private static final String CAMERA_DIR = "/dcim/";
 
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying
@@ -119,6 +156,13 @@ public class EditorActivity extends AppCompatActivity implements
         mSupplierEditText = (EditText) findViewById(R.id.edit_item_supplier);
         mWeightEditText = (EditText) findViewById(R.id.edit_item_weight);
         mStatusSpinner = (Spinner) findViewById(R.id.spinner_status);
+        mCostEditText = (EditText) findViewById(R.id.edit_item_cost);
+        mQuantityEditText = (EditText) findViewById(R.id.edit_item_quantity);
+
+        //mImageView = (ImageView) findViewById(R.id.image);
+
+        //mButtonTakePicture = (Button) findViewById(R.id.take_image);
+        //mButtonTakePicture.setEnabled(false);
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
@@ -127,12 +171,47 @@ public class EditorActivity extends AppCompatActivity implements
         mSupplierEditText.setOnTouchListener(mTouchListener);
         mWeightEditText.setOnTouchListener(mTouchListener);
         mStatusSpinner.setOnTouchListener(mTouchListener);
+        mCostEditText.setOnTouchListener(mTouchListener);
+        mQuantityEditText.setOnTouchListener(mTouchListener);
 
         setupSpinner();
+        //requestPermissions();
     }
 
+//    public void requestPermissions() {
+//        // Ask for permission
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+//                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+//
+//            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+//                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//
+//                // Show an expanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//
+//            } else {
+//
+//                // No explanation needed, we can request the permission.
+//
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+//                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                        MY_PERMISSIONS_REQUEST);
+//
+//                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+//                // app-defined int constant. The callback method gets the
+//                // result of the request.
+//            }
+//        } else {
+//            mButtonTakePicture.setEnabled(true);
+//        }
+//    }
+
+
     /**
-     * Setup the dropdown spinner that allows the user to select the status of the pet.
+     * Setup the dropdown spinner that allows the user to select the status of the item.
      */
     private void setupSpinner() {
         // Create adapter for spinner. The list options are from the String array it will use
@@ -179,19 +258,25 @@ public class EditorActivity extends AppCompatActivity implements
         String nameString = mNameEditText.getText().toString().trim();
         String supplierString = mSupplierEditText.getText().toString().trim();
         String weightString = mWeightEditText.getText().toString().trim();
+        String costString = mCostEditText.getText().toString().trim();
+        String quantityString = mQuantityEditText.getText().toString().trim();
 
         // Check if this is supposed to be a new item
         // and check if all the fields in the editor are blank
         if (mCurrentItemUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(supplierString) &&
-                TextUtils.isEmpty(weightString) && mStatus == itemEntry.STATUS_QUEUE) {
+                TextUtils.isEmpty(nameString) || TextUtils.isEmpty(supplierString) ||
+                TextUtils.isEmpty(weightString) ||
+                TextUtils.isEmpty(costString) ||
+                TextUtils.isEmpty(quantityString) || mStatus == itemEntry.STATUS_QUEUE) {
+
+            Toast.makeText(this, "Please, insert all required information.", Toast.LENGTH_SHORT).show();
             // Since no fields were modified, we can return early without creating a new item.
             // No need to create ContentValues and no need to do any ContentProvider operations.
             return;
         }
 
         // Create a ContentValues object where column names are the keys,
-        // and pet attributes from the editor are the values.
+        // and item attributes from the editor are the values.
         ContentValues values = new ContentValues();
         values.put(itemEntry.COLUMN_ITEM_NAME, nameString);
         values.put(itemEntry.COLUMN_ITEM_SUPPLIER, supplierString);
@@ -203,6 +288,22 @@ public class EditorActivity extends AppCompatActivity implements
             weight = Integer.parseInt(weightString);
         }
         values.put(itemEntry.COLUMN_ITEM_WEIGHT, weight);
+
+        // If the cost is not provided by the user, don't try to parse the string into an
+        // integer value. Use 1 by default.
+        int cost = 1;
+        if (!TextUtils.isEmpty(costString)) {
+            cost = Integer.parseInt(costString);
+        }
+        values.put(itemEntry.COLUMN_ITEM_COST, cost);
+
+        // If the quantity is not provided by the user, don't try to parse the string into an
+        // integer value. Use 1 by default.
+        int quantity = 1;
+        if (!TextUtils.isEmpty(quantityString)) {
+            quantity = Integer.parseInt(quantityString);
+        }
+        values.put(itemEntry.COLUMN_ITEM_QUANTITY, quantity);
 
         // Determine if this is a new or existing item by checking if mCurrentPetUri is null or not
         if (mCurrentItemUri == null) {
@@ -342,7 +443,9 @@ public class EditorActivity extends AppCompatActivity implements
                 itemEntry.COLUMN_ITEM_NAME,
                 itemEntry.COLUMN_ITEM_SUPPLIER,
                 itemEntry.COLUMN_ITEM_STATUS,
-                itemEntry.COLUMN_ITEM_WEIGHT };
+                itemEntry.COLUMN_ITEM_WEIGHT,
+                itemEntry.COLUMN_ITEM_COST,
+                itemEntry.COLUMN_ITEM_QUANTITY};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
@@ -368,17 +471,23 @@ public class EditorActivity extends AppCompatActivity implements
             int supplierColumnIndex = cursor.getColumnIndex(itemEntry.COLUMN_ITEM_SUPPLIER);
             int statusColumnIndex = cursor.getColumnIndex(itemEntry.COLUMN_ITEM_STATUS);
             int weightColumnIndex = cursor.getColumnIndex(itemEntry.COLUMN_ITEM_WEIGHT);
+            int costColumnIndex = cursor.getColumnIndex(itemEntry.COLUMN_ITEM_COST);
+            int quantityColumnIndex = cursor.getColumnIndex(itemEntry.COLUMN_ITEM_QUANTITY);
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
             String supplier = cursor.getString(supplierColumnIndex);
             int status = cursor.getInt(statusColumnIndex);
             int weight = cursor.getInt(weightColumnIndex);
+            int cost = cursor.getInt(costColumnIndex);
+            int quantity = cursor.getInt(quantityColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
             mSupplierEditText.setText(supplier);
             mWeightEditText.setText(Integer.toString(weight));
+            mCostEditText.setText(Integer.toString(cost));
+            mQuantityEditText.setText(Integer.toString(quantity));
 
             // Gender is a dropdown spinner, so map the constant value from the database
             // into one of the dropdown options (0 is Unknown, 1 is Male, 2 is Female).
@@ -403,6 +512,8 @@ public class EditorActivity extends AppCompatActivity implements
         mNameEditText.setText("");
         mSupplierEditText.setText("");
         mWeightEditText.setText("");
+        mCostEditText.setText("");
+        mQuantityEditText.setText("");
         mStatusSpinner.setSelection(0); // Select "Unknown" gender
     }
 

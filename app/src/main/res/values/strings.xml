@@ -80,8 +80,11 @@
     <!-- Label for gender information in the editor [CHAR LIMIT=30] -->
     <string name="category_status">Status</string>
 
-    <!-- Label for measurement information in the editor [CHAR LIMIT=30] -->
-    <string name="category_measurement">Measurement</string>
+    <!-- Label for cost information in the editor [CHAR LIMIT=30] -->
+    <string name="category_cost">Cost</string>
+
+    <!-- Label for quantity information in the editor [CHAR LIMIT=30] -->
+    <string name="category_quantity">Quantity</string>
 
     <!-- Text hint for name field in the editor [CHAR LIMIT=30] -->
     <string name="hint_item_name">Name</string>
@@ -106,4 +109,23 @@
 
     <!-- Label for the pet's breed if the supplier is unknown [CHAR LIMIT=20] -->
     <string name="unknown_supplier">Unknown Supplier</string>
+
+    <string name="unknown_name">Unknown Name</string>
+
+    <string name="unknown_cost">Unknown Cost</string>
+
+    <string name="unknown_quantity">Unknown Amount</string>
+
+    <string name="hint_item_cost">Insert cost here</string>
+
+    <string name="hint_item_costs">($)</string>
+
+    <string name="hint_item_quantity">Insert amount here</string>
+
+    <string name="category_measurement">Measurement</string>
+
+    <string name="quantity_Amount">Amount : </string>
+
+    <string name="cost_Amount">Cost : $</string>
+
 </resources>

@@ -56,7 +56,9 @@ public class ItemDbHelper extends SQLiteOpenHelper {
                 + itemEntry.COLUMN_ITEM_NAME + " TEXT NOT NULL, "
                 + itemEntry.COLUMN_ITEM_SUPPLIER + " TEXT, "
                 + itemEntry.COLUMN_ITEM_STATUS + " INTEGER NOT NULL, "
-                + itemEntry.COLUMN_ITEM_WEIGHT + " INTEGER NOT NULL DEFAULT 0);";
+                + itemEntry.COLUMN_ITEM_WEIGHT + " INTEGER NOT NULL DEFAULT 0,"
+                + itemEntry.COLUMN_ITEM_COST + " INTEGER NOT NULL DEFAULT 1, "
+                + itemEntry.COLUMN_ITEM_QUANTITY + " INTEGER NOT NULL DEFAULT 1);";
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_ITEMS_TABLE);

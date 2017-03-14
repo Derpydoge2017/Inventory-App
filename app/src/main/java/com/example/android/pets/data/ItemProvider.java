@@ -131,24 +131,24 @@ public class ItemProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case ITEMS:
-                return insertPet(uri, contentValues);
+                return insertItem(uri, contentValues);
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
     }
 
     /**
-     * Insert a pet into the database with the given content values. Return the new content URI
+     * Insert a item into the database with the given content values. Return the new content URI
      * for that specific row in the database.
      */
-    private Uri insertPet(Uri uri, ContentValues values) {
+    private Uri insertItem(Uri uri, ContentValues values) {
         // Check that the name is not null
         String name = values.getAsString(itemEntry.COLUMN_ITEM_NAME);
         if (name == null) {
             throw new IllegalArgumentException("Item requires a name");
         }
 
-        // Check that the Supplier is valid
+        // Check that the Status is valid
         Integer status = values.getAsInteger(itemEntry.COLUMN_ITEM_STATUS);
         if (status == null || !itemEntry.isValidStatus(status)) {
             throw new IllegalArgumentException("Item requires valid status");
@@ -158,6 +158,18 @@ public class ItemProvider extends ContentProvider {
         Integer weight = values.getAsInteger(itemEntry.COLUMN_ITEM_WEIGHT);
         if (weight != null && weight < 0) {
             throw new IllegalArgumentException("Item requires valid weight");
+        }
+
+        // If the cost is provided, check that it's greater than or equal to 0
+        Integer cost = values.getAsInteger(itemEntry.COLUMN_ITEM_COST);
+        if (cost != null && cost < 0) {
+            throw new IllegalArgumentException("Item requires valid cost");
+        }
+
+        // If the weight is provided, check that it's greater than or equal to 0
+        Integer quantity = values.getAsInteger(itemEntry.COLUMN_ITEM_QUANTITY);
+        if (quantity != null && quantity < 0) {
+            throw new IllegalArgumentException("Item requires valid amount");
         }
 
         // Get writeable database
@@ -228,6 +240,26 @@ public class ItemProvider extends ContentProvider {
             Integer weight = values.getAsInteger(itemEntry.COLUMN_ITEM_WEIGHT);
             if (weight != null && weight < 0) {
                 throw new IllegalArgumentException("Item requires valid weight");
+            }
+        }
+
+        // If the {@link ItemEntry#COLUMN_ITEM_COST} key is present,
+        // check that the cost value is valid.
+        if (values.containsKey(itemEntry.COLUMN_ITEM_COST)) {
+            // Check that the cost is greater than or equal to 0
+            Integer cost = values.getAsInteger(itemEntry.COLUMN_ITEM_COST);
+            if (cost != null && cost < 0) {
+                throw new IllegalArgumentException("Item requires valid cost");
+            }
+        }
+
+        // If the {@link ItemEntry#COLUMN_ITEM_QUANTITY} key is present,
+        // check that the quantity value is valid.
+        if (values.containsKey(itemEntry.COLUMN_ITEM_QUANTITY)) {
+            // Check that the quantity is greater than or equal to 0
+            Integer quantity = values.getAsInteger(itemEntry.COLUMN_ITEM_QUANTITY);
+            if (quantity != null && quantity < 0) {
+                throw new IllegalArgumentException("Item requires valid amount");
             }
         }
 

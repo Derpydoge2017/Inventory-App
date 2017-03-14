@@ -103,6 +103,20 @@ public final class ItemContract {
         public final static String COLUMN_ITEM_STATUS = "status";
 
         /**
+         * Cost of the item.
+         *
+         * Type: INTEGER
+         */
+        public final static String COLUMN_ITEM_COST = "cost";
+
+        /**
+         * Quantity of the item.
+         *
+         * Type: INTEGER
+         */
+        public final static String COLUMN_ITEM_QUANTITY = "quantity";
+
+        /**
          * Weight of the item.
          *
          * Type: INTEGER

@@ -22,6 +22,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -111,6 +112,8 @@ public class CatalogActivity extends AppCompatActivity implements
         values.put(itemEntry.COLUMN_ITEM_SUPPLIER, "The Random Company");
         values.put(itemEntry.COLUMN_ITEM_STATUS, itemEntry.STATUS_DELIVERING);
         values.put(itemEntry.COLUMN_ITEM_WEIGHT, 30);
+        values.put(itemEntry.COLUMN_ITEM_COST, 50);
+        values.put(itemEntry.COLUMN_ITEM_QUANTITY, 1);
 
         // Insert a new row for Tony's Item into the provider using the ContentResolver.
         // Use the {@link ItemEntry#CONTENT_URI} to indicate that we want to insert
@@ -157,7 +160,9 @@ public class CatalogActivity extends AppCompatActivity implements
         String[] projection = {
                 itemEntry._ID,
                 itemEntry.COLUMN_ITEM_NAME,
-                itemEntry.COLUMN_ITEM_STATUS };
+                itemEntry.COLUMN_ITEM_SUPPLIER,
+                itemEntry.COLUMN_ITEM_COST,
+                itemEntry.COLUMN_ITEM_QUANTITY};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
@@ -172,6 +177,8 @@ public class CatalogActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Update {@link PetCursorAdapter} with this new cursor containing updated item data
         mCursorAdapter.swapCursor(data);
+        DatabaseUtils.dumpCursor(data);
+
     }
 
     @Override
