@@ -179,31 +179,31 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginTop="10dp">-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
 
-        <!--<ImageView-->
-            <!--android:id="@+id/image"-->
-            <!--android:layout_width="200dp"-->
-            <!--android:layout_height="200dp"-->
-            <!--android:layout_gravity="left"-->
-            <!--android:layout_marginTop="15dp"-->
-            <!--android:scaleType="centerCrop">-->
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="left"
+            android:layout_marginTop="15dp"
+            android:scaleType="centerCrop">
 
-        <!--</ImageView>-->
+        </ImageView>
 
-        <!--<Button-->
-            <!--android:id="@+id/take_image"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="Take Image"-->
-            <!--android:layout_gravity="center">-->
+        <Button
+            android:id="@+id/take_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Take Image"
+            android:layout_gravity="center">
 
-        <!--</Button>-->
+        </Button>
 
-    <!--</LinearLayout>-->
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -90,7 +90,7 @@ public class ItemCursorAdapter extends CursorAdapter {
      *                correct row.
      */
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, final Cursor cursor) {
         // Find individual views that we want to modify in the list item layout
         TextView nameTextView = (TextView) view.findViewById(R.id.name);
         TextView costTextView = (TextView) view.findViewById(R.id.cost);
@@ -107,11 +107,14 @@ public class ItemCursorAdapter extends CursorAdapter {
         // Context variable for the context passed in
         mContext = context;
 
+        final int position = cursor.getPosition();
+
         // Click button for "Item Sold" on detail layout, update quantity and sold numbers
         Button saleButton = (Button) view.findViewById(R.id.sale_Button);
         saleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cursor.moveToPosition(position);
                 saleItem();
             }
         });

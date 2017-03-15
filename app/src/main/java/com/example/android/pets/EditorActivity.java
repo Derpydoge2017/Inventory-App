@@ -91,25 +91,25 @@ public class EditorActivity extends AppCompatActivity implements
     /** Boolean flag that keeps track of whether the item has been edited (true) or not (false) */
     private boolean mItemHasChanged = false;
 
-//    private static final int PICK_IMAGE_REQUEST = 0;
-//    private static final int REQUEST_IMAGE_CAPTURE = 1;
-//    private static final int MY_PERMISSIONS_REQUEST = 2;
-//
-//    private static final String FILE_PROVIDER_AUTHORITY = "com.example.android.pets";
-//
-//    private ImageView mImageView;
-//
-//    private Uri mUri;
-//    private Bitmap mBitmap;
-//
-//    private Button mButtonTakePicture;
-//
-//    private boolean isGalleryPicture = false;
-//
-//    private static final String JPEG_FILE_PREFIX = "IMG_";
-//    private static final String JPEG_FILE_SUFFIX = ".jpg";
-//
-//    private static final String CAMERA_DIR = "/dcim/";
+    private static final int PICK_IMAGE_REQUEST = 0;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int MY_PERMISSIONS_REQUEST = 2;
+
+    private static final String FILE_PROVIDER_AUTHORITY = "com.example.android.pets";
+
+    private ImageView mImageView;
+
+    private Uri mUri;
+    private Bitmap mBitmap;
+
+    private Button mButtonTakePicture;
+
+    private boolean isGalleryPicture = false;
+
+    private static final String JPEG_FILE_PREFIX = "IMG_";
+    private static final String JPEG_FILE_SUFFIX = ".jpg";
+
+    private static final String CAMERA_DIR = "/dcim/";
 
     /**
      * OnTouchListener that listens for any user touches on a View, implying that they are modifying
@@ -159,9 +159,9 @@ public class EditorActivity extends AppCompatActivity implements
         mCostEditText = (EditText) findViewById(R.id.edit_item_cost);
         mQuantityEditText = (EditText) findViewById(R.id.edit_item_quantity);
 
-        //mImageView = (ImageView) findViewById(R.id.image);
+        mImageView = (ImageView) findViewById(R.id.image);
 
-        //mButtonTakePicture = (Button) findViewById(R.id.take_image);
+        //mButtonTakePicture = (Button)findViewById(R.id.take_image);
         //mButtonTakePicture.setEnabled(false);
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
