@@ -40,15 +40,11 @@ import static com.example.android.pets.data.ItemProvider.LOG_TAG;
  */
 public class ItemCursorAdapter extends CursorAdapter {
 
-    private TextView mQuantityTextView;
-
-    private String mQuantityString;
 
     private int mRowsAffected;
 
     private Context mContext;
 
-    private int mRowId;
 
     /**
      * Constructs a new {@link ItemCursorAdapter}.
@@ -91,6 +87,10 @@ public class ItemCursorAdapter extends CursorAdapter {
      */
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
+
+        final TextView mQuantityTextView;
+
+
         // Find individual views that we want to modify in the list item layout
         TextView nameTextView = (TextView) view.findViewById(R.id.name);
         TextView costTextView = (TextView) view.findViewById(R.id.cost);
@@ -102,8 +102,6 @@ public class ItemCursorAdapter extends CursorAdapter {
         int costColumnIndex = cursor.getColumnIndex(itemEntry.COLUMN_ITEM_COST);
         int quantityColumnIndex = cursor.getColumnIndex(itemEntry.COLUMN_ITEM_QUANTITY);
 
-        // Get the ID for the item row
-        mRowId = cursor.getInt(cursor.getColumnIndex(itemEntry._ID));
         // Context variable for the context passed in
         mContext = context;
 
@@ -115,7 +113,10 @@ public class ItemCursorAdapter extends CursorAdapter {
             @Override
             public void onClick(View v) {
                 cursor.moveToPosition(position);
-                saleItem();
+                // Get the ID for the item row
+
+                saleItem(cursor.getInt(cursor.getColumnIndex(itemEntry._ID)), mQuantityTextView);
+                return;
             }
         });
 
@@ -145,7 +146,8 @@ public class ItemCursorAdapter extends CursorAdapter {
     }
 
     // Executed when "Sale" button is pressed, takes away from quantity
-    public int saleItem() {
+    public int saleItem(int mRowId, TextView mQuantityTextView) {
+        String mQuantityString;
         int quantity = Integer.parseInt(mQuantityTextView.getText().toString());
 
         if (quantity > 0) {
@@ -168,4 +170,3 @@ public class ItemCursorAdapter extends CursorAdapter {
     }
 
 }
-
